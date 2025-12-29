@@ -1,0 +1,156 @@
+[
+  {
+    "id": "chemistry_mole_001",
+    "category": "chemistry",
+    "subject": "化学",
+    "topic": "物质的量",
+    "theorem": "摩尔概念",
+    "difficulty": "初级",
+    "description": "摩尔是物质的量的单位，1摩尔任何物质包含阿伏伽德罗常数（约6.02×10²³）个微粒",
+    "formula": "n = N/NA = m/M",
+    "formulaLatex": "n = \\frac{N}{N_A} = \\frac{m}{M}",
+    "visualization": {
+      "type": "chemistry",
+      "description": "摩尔与微粒数、质量的关系",
+      "widgets": ["mole_concept", "particles"]
+    },
+    "proofSteps": [
+      {
+        "step": 1,
+        "title": "定义摩尔",
+        "content": "为了便于计数，规定包含阿伏伽德罗常数个微粒的物质为1摩尔",
+        "visual": "mole_definition"
+      },
+      {
+        "step": 2,
+        "title": "微粒数关系",
+        "content": "物质的量(n) = 微粒数(N) / 阿伏伽德罗常数(NA)",
+        "visual": "particle_relation"
+      },
+      {
+        "step": 3,
+        "title": "质量关系",
+        "content": "物质的量(n) = 质量(m) / 摩尔质量(M)",
+        "visual": "mass_relation"
+      }
+    ],
+    "examples": [
+      {
+        "problem": "2摩尔水分子中有多少个水分子？",
+        "solution": "N = n × NA = 2 × 6.02×10²³ = 1.204×10²⁴个",
+        "steps": ["已知：n=2mol", "应用公式：N = n × NA", "计算：N = 2 × 6.02×10²³ = 1.204×10²⁴"]
+      },
+      {
+        "problem": "36g水的物质的量是多少？",
+        "solution": "n = m/M = 36g/18g·mol⁻¹ = 2mol",
+        "steps": ["已知：m=36g, M(H₂O)=18g·mol⁻¹", "应用公式：n = m/M", "计算：n = 36/18 = 2mol"]
+      }
+    ],
+    "commonMistakes": [
+      {
+        "mistake": "混淆摩尔质量和相对分子质量",
+        "correction": "摩尔质量单位是g/mol，相对分子质量无量纲，数值相同"
+      },
+      {
+        "mistake": "忽略摩尔概念的适用范围",
+        "correction": "摩尔适用于微观粒子（原子、分子、离子等），不适用于宏观物体"
+      },
+      {
+        "mistake": "单位错误",
+        "correction": "物质的量单位是mol，不是个"
+      }
+    ],
+    "socraticQuestions": [
+      "为什么要用摩尔这个单位？",
+      "1摩尔铁和1摩尔水，哪个质量大？",
+      "摩尔和质量有什么区别？"
+    ],
+    "prerequisites": ["原子", "分子", "相对原子质量"],
+    "relatedTheorems": ["chemistry_concentration_001", "chemistry_gas_001"],
+    "teachingTips": [
+      "用日常物品类比（如打鸡蛋）",
+      "强调数量级（10²³很大）",
+      "多做换算练习",
+      "联系实际应用"
+    ],
+    "keywords": ["摩尔", "物质的量", "阿伏伽德罗常数", "微粒数"],
+    "embeddingText": "摩尔 物质的量 阿伏伽德罗常数 微粒数 摩尔质量 化学计量"
+  },
+  {
+    "id": "chemistry_periodic_001",
+    "category": "chemistry",
+    "subject": "化学",
+    "topic": "元素周期表",
+    "theorem": "元素周期律",
+    "difficulty": "中级",
+    "description": "元素的性质随着原子序数的递增而呈周期性变化的规律",
+    "formula": "无特定公式，体现为周期性变化规律",
+    "formulaLatex": "\\text{性质} = f(\\text{原子序数}) \\text{（周期性）}",
+    "visualization": {
+      "type": "chemistry",
+      "description": "元素周期表结构",
+      "widgets": ["periodic_table", "trends"]
+    },
+    "proofSteps": [
+      {
+        "step": 1,
+        "title": "排列元素",
+        "content": "按原子序数（核电荷数）递增顺序排列元素",
+        "visual": "arrange_elements"
+      },
+      {
+        "step": 2,
+        "title": "观察周期性",
+        "content": "每隔一定数目的元素，性质重复出现",
+        "visual": "observe_periodicity"
+      },
+      {
+        "step": 3,
+        "title": "总结规律",
+        "content": "同周期元素从左到右性质递变，同主族元素从上到下性质相似",
+        "visual": "summarize_patterns"
+      }
+    ],
+    "examples": [
+      {
+        "problem": "比较Na、Mg、Al的金属性强弱",
+        "solution": "同周期元素从左到右金属性减弱，所以金性：Na > Mg > Al",
+        "steps": ["确定位置：第三周期IA、IIA、IIIA族", "应用周期律：从左到右金属性减弱", "得出结论"]
+      },
+      {
+        "problem": "比较F、Cl、Br、I的非金属性强弱",
+        "solution": "同主族元素从上到下非金属性减弱，所以非金性：F > Cl > Br > I",
+        "steps": ["确定位置：VIIA族", "应用周期律：从上到下非金性减弱", "得出结论"]
+      }
+    ],
+    "commonMistakes": [
+      {
+        "mistake": "混淆周期和族",
+        "correction": "周期是横行，族是纵列"
+      },
+      {
+        "mistake": "认为所有性质都周期性变化",
+        "correction": "主要化合价、原子半径、金属性/非金属性等呈周期性变化"
+      },
+      {
+        "mistake": "忽略例外",
+        "correction": "存在一些特殊情况，如过渡元素"
+      }
+    ],
+    "socraticQuestions": [
+      "为什么元素性质会周期性变化？",
+      "元素周期表有什么预测作用？",
+      "氦为什么放在VIII A族？"
+    ],
+    "prerequisites": ["原子结构", "电子排布", "元素符号"],
+    "relatedTheorems": ["chemistry_bond_001", "chemistry_reaction_001"],
+    "teachingTips": [
+      "结合原子结构讲解",
+      "用颜色标注周期表",
+      "记忆主族元素规律",
+      "联系元素发现史"
+    ],
+    "keywords": ["元素周期律", "元素周期表", "金属性", "非金属性", "原子序数"],
+    "embeddingText": "元素周期律 元素周期表 周期性变化 金属性 非金属性 原子结构"
+  }
+]

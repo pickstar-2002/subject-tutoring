@@ -1,0 +1,233 @@
+[
+  {
+    "id": "physics_newton1_001",
+    "category": "physics",
+    "subject": "物理",
+    "topic": "力学",
+    "theorem": "牛顿第一定律",
+    "difficulty": "初级",
+    "description": "一切物体在没有受到外力作用时，总保持静止状态或匀速直线运动状态",
+    "formula": "F = 0 时，v = 恒量 或 a = 0",
+    "formulaLatex": "\\vec{F} = \\vec{0} \\Rightarrow \\vec{v} = \\text{constant}",
+    "visualization": {
+      "type": "physics",
+      "description": "物体在无外力时的运动状态",
+      "widgets": ["motion_diagram"]
+    },
+    "proofSteps": [
+      {
+        "step": 1,
+        "title": "观察现象",
+        "content": "在冰面上滑动的物体能滑行很远，在粗糙地面上很快停下",
+        "visual": "friction_observation"
+      },
+      {
+        "step": 2,
+        "title": "伽利略理想实验",
+        "content": "如果没有摩擦力，物体将永远运动下去",
+        "visual": "galileo_experiment"
+      },
+      {
+        "step": 3,
+        "title": "得出结论",
+        "content": "力不是维持运动的原因，而是改变运动状态的原因",
+        "visual": "conclusion"
+      }
+    ],
+    "examples": [
+      {
+        "problem": "汽车急刹车时，乘客为什么会前倾？",
+        "solution": "乘客下半身随车减速，上半身由于惯性保持原来速度继续向前运动，所以前倾",
+        "steps": ["识别系统：乘客的上半身", "分析初态：与车同速运动", "分析过程：车减速，人不受水平力", "应用惯性：人保持原速", "得出结论：人比车快，前倾"]
+      },
+      {
+        "problem": "为什么拍打衣服能除尘？",
+        "solution": "衣服受力快速运动，灰尘由于惯性保持静止，与衣服分离",
+        "steps": ["衣服受力突然运动", "灰尘不受外力（力很小）", "灰尘保持静止", "衣服离开，灰尘落下"]
+      }
+    ],
+    "commonMistakes": [
+      {
+        "mistake": "认为物体不受力时一定静止",
+        "correction": "不受力时可能静止，也可能匀速直线运动，取决于初态"
+      },
+      {
+        "mistake": "混淆惯性和力",
+        "correction": "惯性是物体属性，与是否受力无关；力是改变运动状态的原因"
+      },
+      {
+        "mistake": "认为运动需要力维持",
+        "correction": "运动不需要力维持，力是改变运动状态的原因"
+      }
+    ],
+    "socraticQuestions": [
+      "如果地球突然停止自转，会发生什么？",
+      "为什么在太空中物体能永远运动？",
+      "惯性大小与什么有关？"
+    ],
+    "prerequisites": ["速度", "加速度", "力的概念"],
+    "relatedTheorems": ["physics_newton2_001", "physics_newton3_001", "physics_inertia_001"],
+    "teachingTips": [
+      "用生活实例说明",
+      "做理想实验演示",
+      "对比不同质量的物体",
+      "联系安全知识"
+    ],
+    "keywords": ["牛顿第一定律", "惯性", "力", "运动", "静止"],
+    "embeddingText": "牛顿第一定律 惯性定律 力与运动 惯性 伽利略理想实验"
+  },
+  {
+    "id": "physics_newton2_001",
+    "category": "physics",
+    "subject": "物理",
+    "topic": "力学",
+    "theorem": "牛顿第二定律",
+    "difficulty": "中级",
+    "description": "物体的加速度与合外力成正比，与质量成反比，加速度方向与合外力方向相同",
+    "formula": "F = ma",
+    "formulaLatex": "\\vec{F} = m\\vec{a}",
+    "visualization": {
+      "type": "physics",
+      "description": "力、质量、加速度关系",
+      "widgets": ["force_diagram", "acceleration_vector"]
+    },
+    "proofSteps": [
+      {
+        "step": 1,
+        "title": "实验观察",
+        "content": "保持质量不变，改变力的大小，观察加速度变化",
+        "visual": "constant_mass"
+      },
+      {
+        "step": 2,
+        "title": "实验观察",
+        "content": "保持力不变，改变质量，观察加速度变化",
+        "visual": "constant_force"
+      },
+      {
+        "step": 3,
+        "title": "归纳总结",
+        "content": "a ∝ F（m恒定），a ∝ 1/m（F恒定），综合得 F = ma",
+        "visual": "conclusion"
+      }
+    ],
+    "examples": [
+      {
+        "problem": "质量为2kg的物体，受到10N的水平力，求加速度",
+        "solution": "a = F/m = 10N/2kg = 5m/s²",
+        "steps": ["确定已知量：m=2kg, F=10N", "应用公式：a = F/m", "计算：a = 10/2 = 5m/s²"]
+      },
+      {
+        "problem": "电梯加速上升时，人的体重感觉会变化，为什么？",
+        "solution": "电梯上升加速时，人对地板的压力大于重力，产生向上的合力，人感觉变重",
+        "steps": ["人受力：重力mg向下，支持力N向上", "合力：F = N - mg = ma（向上为正）", "支持力：N = m(g+a) > mg", "人对地板压力 = N，所以感觉变重"]
+      }
+    ],
+    "commonMistakes": [
+      {
+        "mistake": "忽略力的方向性",
+        "correction": "F是合外力，a是加速度，两者都是矢量，方向相同"
+      },
+      {
+        "mistake": "混淆质量和重量",
+        "correction": "质量是物体属性，重量是重力(G=mg)"
+      },
+      {
+        "mistake": "瞬时关系理解错误",
+        "correction": "F和a是瞬时关系，F变则a立即变"
+      }
+    ],
+    "socraticQuestions": [
+      "为什么自由落体中所有物体加速度相同？",
+      "力大一定加速度大吗？",
+      "质量越大越难改变运动状态，为什么？"
+    ],
+    "prerequisites": ["牛顿第一定律", "加速度", "力的合成"],
+    "relatedTheorems": ["physics_newton1_001", "physics_newton3_001", "physics_freefall_001"],
+    "teachingTips": [
+      "强调矢量性",
+      "用实验数据验证",
+      "联系实际生活",
+      "区分瞬时和累计"
+    ],
+    "keywords": ["牛顿第二定律", "F=ma", "加速度", "质量", "力"],
+    "embeddingText": "牛顿第二定律 F=ma 加速度 合外力 质量 运动定律"
+  },
+  {
+    "id": "physics_ohm_001",
+    "category": "physics",
+    "subject": "物理",
+    "topic": "电磁学",
+    "theorem": "欧姆定律",
+    "difficulty": "初级",
+    "description": "导体中的电流与两端电压成正比，与电阻成反比",
+    "formula": "I = U/R",
+    "formulaLatex": "I = \\frac{U}{R}",
+    "visualization": {
+      "type": "electricity",
+      "description": "电流、电压、电阻关系",
+      "widgets": ["circuit_diagram", "measurement"]
+    },
+    "proofSteps": [
+      {
+        "step": 1,
+        "title": "控制变量实验",
+        "content": "保持电阻不变，改变电压，测量电流",
+        "visual": "constant_R"
+      },
+      {
+        "step": 2,
+        "title": "控制变量实验",
+        "content": "保持电压不变，改变电阻，测量电流",
+        "visual": "constant_U"
+      },
+      {
+        "step": 3,
+        "title": "数据分析",
+        "content": "I与U成正比，I与R成反比，得 I = U/R",
+        "visual": "conclusion"
+      }
+    ],
+    "examples": [
+      {
+        "problem": "一个电阻两端电压为6V，通过的电流为2A，求电阻值",
+        "solution": "R = U/I = 6V/2A = 3Ω",
+        "steps": ["已知：U=6V, I=2A", "变形公式：R = U/I", "计算：R = 6/2 = 3Ω"]
+      },
+      {
+        "problem": "家庭电路电压220V，某电器电阻44Ω，求通过它的电流",
+        "solution": "I = U/R = 220V/44Ω = 5A",
+        "steps": ["已知：U=220V, R=44Ω", "应用公式：I = U/R", "计算：I = 220/44 = 5A"]
+      }
+    ],
+    "commonMistakes": [
+      {
+        "mistake": "混淆U和IR的关系",
+        "correction": "U是原因，I是结果，R是导体的性质"
+      },
+      {
+        "mistake": "认为电阻与电压电流有关",
+        "correction": "电阻是导体属性，与U、I无关，由材料、长度、截面积决定"
+      },
+      {
+        "mistake": "单位换算错误",
+        "correction": "必须用标准单位：V、A、Ω"
+      }
+    ],
+    "socraticQuestions": [
+      "为什么电压是0时电流也是0？",
+      "电阻为0时会发生什么？",
+      "欧姆定律对所有导体都适用吗？"
+    ],
+    "prerequisites": ["电流", "电压", "电阻"],
+    "relatedTheorems": ["physics_power_001", "physics_kirchhoff_001"],
+    "teachingTips": [
+      "用水流类比",
+      "强调因果关系",
+      "多做计算练习",
+      "联系实际电路"
+    ],
+    "keywords": ["欧姆定律", "电流", "电压", "电阻", "电路"],
+    "embeddingText": "欧姆定律 I=U/R 电流 电压 电阻 电路定律 电学"
+  }
+]

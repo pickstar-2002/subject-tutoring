@@ -1,0 +1,230 @@
+[
+  {
+    "id": "math_pythagorean_001",
+    "category": "math",
+    "subject": "数学",
+    "topic": "平面几何",
+    "theorem": "勾股定理",
+    "difficulty": "初级",
+    "description": "直角三角形两直角边的平方和等于斜边的平方",
+    "formula": "a² + b² = c²",
+    "formulaLatex": "a^2 + b^2 = c^2",
+    "visualization": {
+      "type": "geometry",
+      "description": "直角三角形示意图，标注三边",
+      "widgets": ["triangle", "labels"]
+    },
+    "proofSteps": [
+      {
+        "step": 1,
+        "title": "构造辅助图形",
+        "content": "以直角三角形三边为边长，分别构造三个正方形",
+        "visual": "square_construction"
+      },
+      {
+        "step": 2,
+        "title": "面积计算",
+        "content": "两直角边上的正方形面积之和等于斜边上的正方形面积",
+        "visual": "area_calculation"
+      },
+      {
+        "step": 3,
+        "title": "得出结论",
+        "content": "因此 a² + b² = c²",
+        "visual": "conclusion"
+      }
+    ],
+    "examples": [
+      {
+        "problem": "已知直角三角形两直角边分别为3和4，求斜边长度",
+        "solution": "根据勾股定理：c = √(3² + 4²) = √25 = 5",
+        "steps": ["列出已知条件：a=3, b=4", "代入公式：c² = 3² + 4² = 25", "开方求值：c = √25 = 5"]
+      },
+      {
+        "problem": "已知直角三角形斜边为13，一条直角边为5，求另一条直角边",
+        "solution": "根据勾股定理：b = √(13² - 5²) = √144 = 12",
+        "steps": ["列出已知条件：c=13, a=5", "变形公式：b² = c² - a²", "计算：b² = 169 - 25 = 144", "开方：b = √144 = 12"]
+      }
+    ],
+    "commonMistakes": [
+      {
+        "mistake": "忘记判断是否为直角三角形",
+        "correction": "勾股定理只适用于直角三角形，使用前必须确认三角形有直角"
+      },
+      {
+        "mistake": "计算时忘记开平方",
+        "correction": "c² = a² + b²，求斜边c需要开平方根，不能直接等于a² + b²"
+      },
+      {
+        "mistake": "混淆斜边和直角边",
+        "correction": "斜边是直角所对的边，是最长的边，直角边是形成直角的两条边"
+      }
+    ],
+    "socraticQuestions": [
+      "如果只知道三角形两边长度，能确定第三边吗？",
+      "为什么勾股定理只适用于直角三角形？",
+      "你能想到这个定理在生活中的应用吗？",
+      "如果三角形不是直角三角形，三边有什么关系？"
+    ],
+    "prerequisites": ["直角三角形", "平方运算", "开平方"],
+    "relatedTheorems": ["math_cosine_001", "math_sine_001", "math_triangle_inequality_001"],
+    "teachingTips": [
+      "通过实际测量验证",
+      "用网格纸画图理解",
+      "联系建筑工程应用",
+      "用拼图法直观展示"
+    ],
+    "keywords": ["勾股定理", "直角三角形", "毕达哥拉斯", "几何", "平方"],
+    "embeddingText": "勾股定理 直角三角形 两直角边平方和 斜边 平方 毕达哥拉斯定理 几何定理"
+  },
+  {
+    "id": "math_quadratic_001",
+    "category": "math",
+    "subject": "数学",
+    "topic": "代数",
+    "theorem": "一元二次方程求根公式",
+    "difficulty": "中级",
+    "description": "对于一元二次方程 ax² + bx + c = 0 (a≠0)，其根为 x = (-b ± √(b²-4ac)) / 2a",
+    "formula": "x = (-b ± √(b²-4ac)) / 2a",
+    "formulaLatex": "x = \\frac{-b \\pm \\sqrt{b^2-4ac}}{2a}",
+    "visualization": {
+      "type": "algebra",
+      "description": "二次函数图像与x轴交点",
+      "widgets": ["parabola", "roots"]
+    },
+    "proofSteps": [
+      {
+        "step": 1,
+        "title": "配方法",
+        "content": "将方程 ax² + bx + c = 0 两边除以a，得 x² + (b/a)x + (c/a) = 0",
+        "visual": "divide_by_a"
+      },
+      {
+        "step": 2,
+        "title": "移项配方",
+        "content": "移项得 x² + (b/a)x = -(c/a)，配方得 (x + b/2a)² = (b²-4ac)/4a²",
+        "visual": "complete_square"
+      },
+      {
+        "step": 3,
+        "title": "开方求解",
+        "content": "开方得 x + b/2a = ±√(b²-4ac)/2a，从而得求根公式",
+        "visual": "solve"
+      }
+    ],
+    "examples": [
+      {
+        "problem": "解方程 x² - 5x + 6 = 0",
+        "solution": "使用求根公式：x = (5 ± √(25-24))/2 = (5 ± 1)/2，所以 x₁=3, x₂=2",
+        "steps": ["确定系数：a=1, b=-5, c=6", "计算判别式：Δ = 25-24 = 1", "代入公式：x = (5 ± 1)/2", "求得根：x₁=3, x₂=2"]
+      },
+      {
+        "problem": "解方程 2x² - 4x - 3 = 0",
+        "solution": "x = (4 ± √(16+24))/4 = (4 ± √40)/4 = (4 ± 2√10)/4 = (2 ± √10)/2",
+        "steps": ["确定系数：a=2, b=-4, c=-3", "计算判别式：Δ = 16+24 = 40", "代入公式并化简"]
+      }
+    ],
+    "commonMistakes": [
+      {
+        "mistake": "忘记系数a不能为0",
+        "correction": "一元二次方程要求最高次项系数不为0"
+      },
+      {
+        "mistake": "符号错误",
+        "correction": "注意b的符号是负的，即公式中是 -b"
+      },
+      {
+        "mistake": "忽略判别式",
+        "correction": "当 b²-4ac < 0 时，方程无实数根"
+      }
+    ],
+    "socraticQuestions": [
+      "为什么方程最多有两个根？",
+      "判别式小于0时，方程有解吗？",
+      "配方法和公式法有什么联系？"
+    ],
+    "prerequisites": ["一元一次方程", "平方根", "配方法"],
+    "relatedTheorems": ["math_vietas_001", "math_function_quadratic_001"],
+    "teachingTips": [
+      "先掌握配方法",
+      "理解判别式的意义",
+      "多用例题练习",
+      "联系二次函数"
+    ],
+    "keywords": ["一元二次方程", "求根公式", "判别式", "代数", "方程"],
+    "embeddingText": "一元二次方程 求根公式 判别式 配方法 代数方程 解方程"
+  },
+  {
+    "id": "math_derivative_001",
+    "category": "math",
+    "subject": "数学",
+    "topic": "微积分",
+    "theorem": "导数的定义",
+    "difficulty": "高级",
+    "description": "函数 f(x) 在点 x₀ 处的导数定义为 f'(x₀) = lim(Δx→0) [f(x₀+Δx) - f(x₀)] / Δx",
+    "formula": "f'(x) = lim(Δx→0) [f(x+Δx) - f(x)] / Δx",
+    "formulaLatex": "f'(x) = \\lim_{\\Delta x \\to 0} \\frac{f(x+\\Delta x) - f(x)}{\\Delta x}",
+    "visualization": {
+      "type": "calculus",
+      "description": "割线逼近切线",
+      "widgets": ["secant", "tangent", "limit"]
+    },
+    "proofSteps": [
+      {
+        "step": 1,
+        "title": "平均变化率",
+        "content": "计算 [f(x+Δx) - f(x)] / Δx，这是割线的斜率",
+        "visual": "secant_slope"
+      },
+      {
+        "step": 2,
+        "title": "取极限",
+        "content": "让 Δx → 0，割线逐渐逼近切线",
+        "visual": "approach_tangent"
+      },
+      {
+        "step": 3,
+        "title": "得到导数",
+        "content": "极限值就是切线的斜率，即导数",
+        "visual": "derivative_result"
+      }
+    ],
+    "examples": [
+      {
+        "problem": "求 f(x) = x² 在 x = 1 处的导数",
+        "solution": "f'(1) = lim(Δx→0) [(1+Δx)² - 1] / Δx = lim(Δx→0) [2Δx + (Δx)²] / Δx = lim(Δx→0) (2 + Δx) = 2",
+        "steps": ["写出定义式", "展开并化简", "约去 Δx", "取极限"]
+      },
+      {
+        "problem": "求常数函数 f(x) = c 的导数",
+        "solution": "f'(x) = lim(Δx→0) [c - c] / Δx = lim(Δx→0) 0 / Δx = 0",
+        "steps": ["函数值不变，差为0", "0除以任何数仍是0", "极限为0"]
+      }
+    ],
+    "commonMistakes": [
+      {
+        "mistake": "直接代入 Δx = 0",
+        "correction": "必须先化简消去 Δx，再取极限，否则会出现0/0不定式"
+      },
+      {
+        "mistake": "混淆差商方向",
+        "correction": "可以是 [f(x+Δx) - f(x)] / Δx 或 [f(x) - f(x-Δx)] / Δx，极限相同"
+      }
+    ],
+    "socraticQuestions": [
+      "为什么不能直接代入 Δx = 0？",
+      "导数和切线有什么关系？",
+      "函数在不可导点有什么特征？"
+    ],
+    "prerequisites": ["函数", "极限", "平均变化率"],
+    "relatedTheorems": ["math_integral_001", "math_chain_rule_001"],
+    "teachingTips": [
+      "用图像直观理解",
+      "从物理意义入手（速度）",
+      "多做数值计算练习",
+      "联系实际应用"
+    ],
+    "keywords": ["导数", "微分", "极限", "切线", "变化率"],
+    "embeddingText": "导数定义 微积分 极限 切线斜率 变化率 瞬时速度"
+  }
+]

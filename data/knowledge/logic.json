@@ -1,0 +1,158 @@
+[
+  {
+    "id": "logic_modus_ponens_001",
+    "category": "logic",
+    "subject": "逻辑学",
+    "topic": "推理规则",
+    "theorem": "假言推理（肯定前件）",
+    "difficulty": "初级",
+    "description": "如果 P 蕴含 Q，且 P 为真，则 Q 为真",
+    "formula": "P→Q, P ⊢ Q",
+    "formulaLatex": "P \\rightarrow Q, P \\vdash Q",
+    "visualization": {
+      "type": "logic",
+      "description": "推理链",
+      "widgets": ["implication", "inference"]
+    },
+    "proofSteps": [
+      {
+        "step": 1,
+        "title": "分析前提",
+        "content": "前提1：P→Q（如果P则Q）；前提2：P（P成立）",
+        "visual": "analyze_premises"
+      },
+      {
+        "step": 2,
+        "title": "应用规则",
+        "content": "根据蕴含的定义，如果前件P为真，则后件Q必为真",
+        "visual": "apply_rule"
+      },
+      {
+        "step": 3,
+        "title": "得出结论",
+        "content": "因此 Q 为真",
+        "visual": "conclusion"
+      }
+    ],
+    "examples": [
+      {
+        "problem": "如果下雨，地面会湿。现在下雨了，地面湿了吗？",
+        "solution": "是的，地面湿了。设P=下雨，Q=地面湿，则P→Q且P，所以Q",
+        "steps": ["识别命题：P=下雨, Q=地面湿", "识别形式：P→Q, P", "应用规则：推出Q"]
+      },
+      {
+        "problem": "如果 n 是偶数，则 n 能被2整除。已知 n=8 是偶数，能推出什么？",
+        "solution": "能推出 n 能被2整除。这是直接应用假言推理",
+        "steps": ["P=n是偶数, Q=n能被2整除", "P→Q：偶数能被2整除", "P：8是偶数", "结论：8能被2整除"]
+      }
+    ],
+    "commonMistakes": [
+      {
+        "mistake": "否定前件谬误",
+        "correction": "P→Q 且 ¬P 不能推出 ¬Q，这是否定前件谬误"
+      },
+      {
+        "mistake": "混淆充分条件和必要条件",
+        "correction": "P→Q中，P是Q的充分条件，Q是P的必要条件"
+      }
+    ],
+    "socraticQuestions": [
+      "如果 Q 为真，能推出 P 为真吗？",
+      "日常生活中有哪些假言推理的例子？",
+      "假言推理和充分条件假言命题有什么关系？"
+    ],
+    "prerequisites": ["命题", "蕴含", "逻辑连接词"],
+    "relatedTheorems": ["logic_modus_tollens_001", "logic_syllogism_001"],
+    "teachingTips": [
+      "用生活实例说明",
+      "强调\"充分\"和\"必要\"的区别",
+      "多做判断练习",
+      "对比错误推理"
+    ],
+    "keywords": ["假言推理", "肯定前件", "充分条件", "蕴含", "推理规则"],
+    "embeddingText": "假言推理 肯定前件 充分条件 蕴含 推理规则 逻辑学"
+  },
+  {
+    "id": "logic_induction_001",
+    "category": "logic",
+    "subject": "逻辑学",
+    "topic": "归纳法",
+    "theorem": "数学归纳法",
+    "difficulty": "高级",
+    "description": "证明关于所有自然数的命题：1）验证n=1时成立；2）假设n=k时成立，证明n=k+1时也成立",
+    "formula": "P(1) ∧ (∀k: P(k) → P(k+1)) ⇒ ∀n: P(n)",
+    "formulaLatex": "P(1) \\land (\\forall k: P(k) \\rightarrow P(k+1)) \\Rightarrow \\forall n: P(n)",
+    "visualization": {
+      "type": "logic",
+      "description": "多米诺骨牌效应",
+      "widgets": ["domino", "chain"]
+    },
+    "proofSteps": [
+      {
+        "step": 1,
+        "title": "奠基",
+        "content": "验证命题对第一个自然数n=1（或某个起始值）成立",
+        "visual": "base_case"
+      },
+      {
+        "step": 2,
+        "title": "归纳假设",
+        "content": "假设命题对某个自然数n=k成立",
+        "visual": "inductive_hypothesis"
+      },
+      {
+        "step": 3,
+        "title": "归纳递推",
+        "content": "利用归纳假设，证明命题对n=k+1也成立",
+        "visual": "inductive_step"
+      },
+      {
+        "step": 4,
+        "title": "结论",
+        "content": "由数学归纳法原理，命题对所有自然数成立",
+        "visual": "conclusion"
+      }
+    ],
+    "examples": [
+      {
+        "problem": "证明：1+2+3+...+n = n(n+1)/2",
+        "solution": "用数学归纳法：奠基n=1：左=1, 右=1×2/2=1，成立；假设n=k成立，即1+2+...+k=k(k+1)/2；则n=k+1时，左=1+2+...+k+(k+1)=k(k+1)/2+(k+1)=(k+1)(k+2)/2，成立",
+        "steps": ["奠基：验证n=1", "归纳假设：假设n=k时公式成立", "递推：证明n=k+1时公式也成立", "结论：对所有n成立"]
+      },
+      {
+        "problem": "证明：2^n > n（n≥1）",
+        "solution": "奠基n=1：2¹=2>1，成立；假设n=k时2^k > k；则n=k+1时，2^(k+1)=2·2^k > 2k ≥ k+1（k≥1），成立",
+        "steps": ["奠基n=1", "归纳假设2^k > k", "递推2^(k+1) > k+1", "结论"]
+      }
+    ],
+    "commonMistakes": [
+      {
+        "mistake": "忘记奠基步骤",
+        "correction": "必须验证初始情况，否则归纳假设可能不成立"
+      },
+      {
+        "mistake": "归纳假设使用不当",
+        "correction": "归纳递推中必须实际使用归纳假设，否则不是数学归纳法"
+      },
+      {
+        "mistake": "递推证明错误",
+        "correction": "必须严谨证明P(k+1)，不能依赖直观"
+      }
+    ],
+    "socraticQuestions": [
+      "为什么数学归纳法有效？",
+      "和多米诺骨牌有什么相似之处？",
+      "能不能用数学归纳法证明实数性质的命题？"
+    ],
+    "prerequisites": ["自然数", "命题", "逻辑推理"],
+    "relatedTheorems": ["logic_induction_strong_001", "logic_recursion_001"],
+    "teachingTips": [
+      "用多米诺骨牌类比",
+      "强调两个步骤缺一不可",
+      "多做完整证明练习",
+      "分析错误示例"
+    ],
+    "keywords": ["数学归纳法", "归纳", "自然数", "证明方法", "递归"],
+    "embeddingText": "数学归纳法 归纳证明 自然数 奠基 归纳假设 递推"
+  }
+]
