@@ -4,9 +4,13 @@ import { chatService } from './services'
 import { AvatarContainer } from './components/Avatar'
 import { ChatBox, InputArea } from './components/Chat'
 import { ApiKeyModal } from './components/UI'
+import { AdminPanel } from './components/Admin'
 
 function App() {
   const controllerRef = useRef<any>(null)
+
+  // Admin Panel state
+  const [showAdminPanel, setShowAdminPanel] = useState(false)
 
   // Chat Store
   const {
@@ -120,6 +124,44 @@ function App() {
     setAvatarState('think')
     controllerRef.current?.setThink()
 
+    // 创建文本流收集器，用于实时传递给数字人
+    let fullResponse = ''
+    let isFirstChunk = true
+    let streamEnded = false
+
+    // 创建异步生成器，用于实时流式说话
+    const textStreamGenerator = async function* () {
+      // 等待第一个chunk到达
+      while (isFirstChunk) {
+        await new Promise(resolve => setTimeout(resolve, 10))
+      }
+      // 持续产生已接收的文本
+      while (!streamEnded || fullResponse.length > 0) {
+        if (fullResponse.length > 0) {
+          // 每次产生一小块文本
+          const chunkSize = Math.min(5, fullResponse.length)
+          const chunk = fullResponse.substring(0, chunkSize)
+          fullResponse = fullResponse.substring(chunkSize)
+          yield chunk
+        } else if (!streamEnded) {
+          await new Promise(resolve => setTimeout(resolve, 10))
+        } else {
+          break
+        }
+      }
+    }
+
+    // 启动流式说话任务
+    const speechTask = controllerRef.current?.speakStreamRealtime(
+      textStreamGenerator(),
+      {
+        sentenceEndings: /([。！？.!?;；,，]+|\n)/,
+        minSentenceLength: 3,
+        maxSentenceLength: 80,
+        pauseDuration: 200
+      }
+    )
+
     // 流式对话
     await chatService.sendMessageStream(
       {
@@ -128,17 +170,24 @@ function App() {
         sessionId,
         conversationHistory: history
       },
-      // onChunk
+      // onChunk - 实时更新文本并传递给数字人
       (chunk) => {
+        if (isFirstChunk) {
+          isFirstChunk = false
+          // 第一个chunk到达，数字人开始说话
+          setAvatarState('speak')
+        }
+        fullResponse += chunk
         appendCurrentResponse(chunk)
       },
       // onComplete
-      (fullResponse) => {
+      (finalResponse) => {
+        streamEnded = true
         // 添加助手消息
         addMessage({
           id: (Date.now() + 1).toString(),
           role: 'assistant',
-          content: fullResponse,
+          content: finalResponse,
           timestamp: Date.now()
         })
 
@@ -146,14 +195,8 @@ function App() {
         setProcessing(false)
         incrementStreak()
 
-        // 数字人说话 - 使用完整回复
-        controllerRef.current?.speakStream(
-          (async function* () {
-            for (const char of fullResponse) {
-              yield char
-            }
-          })()
-        ).then(() => {
+        // 等待数字人说话完成
+        speechTask?.then(() => {
           setAvatarState('interactive_idle')
         }).catch((error) => {
           console.error('[App] Speech error:', error)
@@ -162,6 +205,7 @@ function App() {
       },
       // onError
       (error) => {
+        streamEnded = true
         addMessage({
           id: (Date.now() + 1).toString(),
           role: 'assistant',
@@ -188,6 +232,11 @@ function App() {
         <ApiKeyModal onClose={() => setShowApiKeyModal(false)} />
       )}
 
+      {/* Admin Panel */}
+      {showAdminPanel && (
+        <AdminPanel onClose={() => setShowAdminPanel(false)} />
+      )}
+
       {/* 顶部导航 - 紧凑版 */}
       <header className="bg-white shadow-sm flex-shrink-0">
         <div className="max-w-full mx-auto px-4 py-2">
@@ -200,6 +249,14 @@ function App() {
               </div>
             </div>
             <div className="flex items-center space-x-3">
+              <button
+                onClick={() => setShowAdminPanel(true)}
+                className="text-xs text-gray-600 hover:text-blue-600 transition px-2 py-1 flex items-center space-x-1"
+                title="知识库管理"
+              >
+                <span>📖</span>
+                <span className="hidden sm:inline">知识库</span>
+              </button>
               <button
                 onClick={() => setShowApiKeyModal(true)}
                 className="text-xs text-gray-600 hover:text-blue-600 transition px-2 py-1 flex items-center space-x-1"
