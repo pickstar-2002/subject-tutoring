@@ -8,3 +8,7 @@ dist/
 *.jpeg
 api.txt
 nul
+
+# 用户上传的文件
+public/uploads/
+data/knowledge/uploaded_documents.json

@@ -7,7 +7,7 @@ const __dirname = path.dirname(__filename)
 
 /**
  * 文档解析服务
- * 支持解析 PDF、TXT、MD 等文档格式
+ * 支持解析 PDF、TXT、MD、JSON 等文档格式
  */
 export class DocumentService {
   private uploadDir: string
@@ -43,6 +43,8 @@ export class DocumentService {
         case '.txt':
         case '.md':
           return this.parseTextFile(filePath)
+        case '.json':
+          return await this.parseJsonFile(filePath)
         case '.pdf':
           return await this.parsePdfFile(filePath)
         default:
@@ -68,6 +70,151 @@ export class DocumentService {
       title: title.replace(/^[#*\s]+/, '').trim(),
       content: content.trim(),
       type: 'text'
+    }
+  }
+
+  /**
+   * 解析 JSON 文件
+   * 支持多种格式：
+   * 1. 知识库定理格式 (theorem, description, proof_steps 等)
+   * 2. 问答格式 (question, answer / tips, example_answer)
+   * 3. 通用对象格式 (title, description)
+   */
+  private async parseJsonFile(filePath: string): Promise<{ title: string; content: string; type: string }> {
+    const content = fs.readFileSync(filePath, 'utf-8')
+    const filename = path.basename(filePath, '.json')
+
+    try {
+      const jsonData = JSON.parse(content)
+
+      // 判断是否是数组
+      if (Array.isArray(jsonData)) {
+        // 数组格式：处理每个元素
+        if (jsonData.length === 0) {
+          return {
+            title: filename,
+            content: '空文件',
+            type: 'json'
+          }
+        }
+
+        const firstItem = jsonData[0]
+
+        // 检测是否是问答格式
+        if (firstItem.question || firstItem.QUESTION) {
+          // 问答格式
+          let textContent = `共 ${jsonData.length} 个问题\n\n`
+
+          jsonData.forEach((item: any, index: number) => {
+            const question = item.question || item.QUESTION || `问题 ${index + 1}`
+            textContent += `${index + 1}. ${question}\n\n`
+
+            if (item.tips || item.TIPS) {
+              textContent += `提示：${item.tips || item.TIPS}\n\n`
+            }
+
+            if (item.example_answer || item.answer || item.ANSWER) {
+              textContent += `参考答案：${item.example_answer || item.answer || item.ANSWER}\n\n`
+            }
+
+            if (item.category) {
+              textContent += `分类：${item.category}\n\n`
+            }
+
+            textContent += '\n'
+          })
+
+          return {
+            title: firstItem.question ? '面试问答集合' : filename,
+            content: textContent.trim(),
+            type: 'json'
+          }
+        }
+
+        // 知识库数组格式：只展示第一个或汇总
+        const title = firstItem.theorem || firstItem.title || firstItem.name || filename
+        let textContent = `共 ${jsonData.length} 个条目\n\n`
+
+        jsonData.forEach((item: any, index: number) => {
+          const itemTitle = item.theorem || item.title || item.name || `条目 ${index + 1}`
+          textContent += `${index + 1}. ${itemTitle}\n\n`
+
+          if (item.description) {
+            textContent += `${item.description}\n\n`
+          }
+
+          if (item.formula || item.formula_latex) {
+            textContent += `公式：${item.formula || item.formula_latex}\n\n`
+          }
+        })
+
+        return {
+          title: title,
+          content: textContent.trim(),
+          type: 'json'
+        }
+      }
+
+      // 单个对象格式
+      const item = jsonData
+      const title = item.theorem || item.title || item.name || item.question || filename
+      const description = item.description || ''
+      const formula = item.formula || item.formula_latex || ''
+
+      // 构建文本内容
+      let textContent = description
+
+      if (formula) {
+        textContent += '\n\n公式: ' + formula
+      }
+
+      if (item.question) {
+        textContent += `\n\n问题: ${item.question}`
+      }
+
+      if (item.tips) {
+        textContent += `\n\n提示: ${item.tips}`
+      }
+
+      if (item.answer || item.example_answer) {
+        textContent += `\n\n参考答案: ${item.answer || item.example_answer}`
+      }
+
+      if (item.proof_steps && item.proof_steps.length > 0) {
+        textContent += '\n\n证明过程:\n'
+        item.proof_steps.forEach((step: any, index: number) => {
+          textContent += `${step.step || index + 1}. ${step.title}\n${step.content}\n`
+        })
+      }
+
+      if (item.examples && item.examples.length > 0) {
+        textContent += '\n\n示例:\n'
+        item.examples.forEach((example: any) => {
+          textContent += `问题: ${example.problem}\n解答: ${example.solution}\n`
+        })
+      }
+
+      if (item.common_mistakes && item.common_mistakes.length > 0) {
+        textContent += '\n\n常见错误:\n'
+        item.common_mistakes.forEach((mistake: any) => {
+          textContent += `- ${mistake.mistake}: ${mistake.correction}\n`
+        })
+      }
+
+      if (item.socratic_questions && item.socratic_questions.length > 0) {
+        textContent += '\n\n思考问题:\n'
+        item.socratic_questions.forEach((question: string) => {
+          textContent += `- ${question}\n`
+        })
+      }
+
+      return {
+        title: title,
+        content: textContent.trim() || '无内容',
+        type: 'json'
+      }
+    } catch (error: any) {
+      throw new Error(`JSON 文件解析失败: ${error.message}`)
     }
   }
 
@@ -416,8 +563,9 @@ export class DocumentService {
 
   /**
    * 删除上传的文档
+   * 支持 id 或 filename
    */
-  deleteDocument(documentId: string): boolean {
+  deleteDocument(identifier: string): boolean {
     const uploadsPath = path.join(this.uploadDir, 'metadata.json')
 
     if (!fs.existsSync(uploadsPath)) {
@@ -428,7 +576,10 @@ export class DocumentService {
       const content = fs.readFileSync(uploadsPath, 'utf-8')
       const metadata: any[] = JSON.parse(content)
 
-      const docIndex = metadata.findIndex(doc => doc.id === documentId)
+      // 优先按 id 查找，如果找不到则按 filename 查找
+      const docIndex = metadata.findIndex(doc =>
+        doc.id === identifier || doc.filename === identifier
+      )
       if (docIndex === -1) {
         return false
       }

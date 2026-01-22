@@ -21,8 +21,20 @@ const documentStorage = multer.diskStorage({
     cb(null, uploadDir)
   },
   filename: (req, file, cb) => {
-    const uniqueSuffix = Date.now() + '-' + Math.random().toString(36).substr(2, 9)
-    cb(null, 'doc-' + uniqueSuffix + path.extname(file.originalname))
+    // 使用原始文件名，如果文件已存在则添加时间戳
+    const originalName = file.originalname
+    const uploadDir = path.join(__dirname, '../../../public/uploads/documents')
+    const filePath = path.join(uploadDir, originalName)
+
+    if (fs.existsSync(filePath)) {
+      // 文件已存在，添加时间戳
+      const ext = path.extname(originalName)
+      const name = path.basename(originalName, ext)
+      const timestamp = Date.now()
+      cb(null, `${name}-${timestamp}${ext}`)
+    } else {
+      cb(null, originalName)
+    }
   }
 })
 
@@ -33,17 +45,18 @@ const documentUpload = multer({
     const allowedTypes = [
       'text/plain',
       'text/markdown',
+      'application/json',
       'application/pdf',
       'application/msword',
       'application/vnd.openxmlformats-officedocument.wordprocessingml.document'
     ]
-    const allowedExts = ['.txt', '.md', '.pdf', '.doc', '.docx']
+    const allowedExts = ['.txt', '.md', '.json', '.pdf', '.doc', '.docx']
     const ext = path.extname(file.originalname).toLowerCase()
 
     if (allowedTypes.includes(file.mimetype) || allowedExts.includes(ext)) {
       cb(null, true)
     } else {
-      cb(new Error('只支持 TXT、MD、PDF、DOC、DOCX 文件'))
+      cb(new Error('只支持 TXT、MD、JSON、PDF、DOC、DOCX 文件'))
     }
   }
 })
@@ -220,6 +233,8 @@ router.post('/upload-document', documentUpload.single('document'), async (req: R
       })
     }
 
+    console.log('[Upload] File received:', req.file.filename, req.file.mimetype)
+
     const { category, topic, difficulty } = req.body
 
     // 解析文档
@@ -295,6 +310,196 @@ router.get('/documents/list', async (req: Request, res: Response) => {
 })
 
 /**
+ * GET /api/knowledge/files/list
+ * 获取所有知识库文件（本地 + 上传）
+ */
+router.get('/files/list', async (req: Request, res: Response) => {
+  try {
+    const knowledgeDir = path.join(__dirname, '../../../data/knowledge')
+    const files: Array<{
+      name: string
+      path: string
+      type: 'local' | 'uploaded'
+      category?: string
+      size?: number
+      itemCount?: number
+    }> = []
+
+    // 读取本地知识库文件
+    if (fs.existsSync(knowledgeDir)) {
+      const localFiles = fs.readdirSync(knowledgeDir).filter(f => f.endsWith('.json'))
+      for (const file of localFiles) {
+        const filePath = path.join(knowledgeDir, file)
+        const stats = fs.statSync(filePath)
+        const content = fs.readFileSync(filePath, 'utf-8')
+        const itemCount = Array.isArray(JSON.parse(content)) ? JSON.parse(content).length : 1
+
+        files.push({
+          name: file,
+          path: filePath,
+          type: 'local',
+          category: file.replace('.json', ''),
+          size: stats.size,
+          itemCount
+        })
+      }
+    }
+
+    // 添加用户上传的文档
+    const uploadedDocs = documentService.getUploadedDocuments()
+    for (const doc of uploadedDocs) {
+      files.push({
+        name: doc.filename,
+        path: '',
+        type: 'uploaded',
+        category: doc.category
+      })
+    }
+
+    res.json({
+      success: true,
+      data: files
+    })
+  } catch (error: any) {
+    res.status(500).json({
+      success: false,
+      error: {
+        code: 'GET_FILES_ERROR',
+        message: error.message || '获取知识库文件时发生错误'
+      }
+    })
+  }
+})
+
+/**
+ * GET /api/knowledge/files/:category/content
+ * 获取知识库文件内容
+ */
+router.get('/files/:category/content', async (req: Request, res: Response) => {
+  try {
+    const { category } = req.params
+    const knowledgeDir = path.join(__dirname, '../../../data/knowledge')
+    const filePath = path.join(knowledgeDir, `${category}.json`)
+
+    if (!fs.existsSync(filePath)) {
+      return res.status(404).json({
+        success: false,
+        error: {
+          code: 'FILE_NOT_FOUND',
+          message: '知识库文件不存在'
+        }
+      })
+    }
+
+    const content = fs.readFileSync(filePath, 'utf-8')
+    const data = JSON.parse(content)
+
+    res.json({
+      success: true,
+      data: {
+        category,
+        items: Array.isArray(data) ? data : [data]
+      }
+    })
+  } catch (error: any) {
+    res.status(500).json({
+      success: false,
+      error: {
+        code: 'GET_FILE_CONTENT_ERROR',
+        message: error.message || '获取文件内容时发生错误'
+      }
+    })
+  }
+})
+
+/**
+ * GET /api/knowledge/documents/:fileName/content
+ * 获取上传文档的处理后内容
+ */
+router.get('/documents/:fileName/content', async (req: Request, res: Response) => {
+  try {
+    const { fileName } = req.params
+    const uploadsDir = path.join(__dirname, '../../../public/uploads/documents')
+    const metadataPath = path.join(uploadsDir, 'metadata.json')
+
+    // 读取元数据
+    if (!fs.existsSync(metadataPath)) {
+      return res.status(404).json({
+        success: false,
+        error: {
+          code: 'METADATA_NOT_FOUND',
+          message: '上传文档元数据不存在'
+        }
+      })
+    }
+
+    const metadataContent = fs.readFileSync(metadataPath, 'utf-8')
+    const metadata: any[] = JSON.parse(metadataContent)
+
+    // 根据文件名查找元数据
+    const docMeta = metadata.find((m: any) => m.filename === fileName || m.id === fileName)
+    if (!docMeta) {
+      return res.status(404).json({
+        success: false,
+        error: {
+          code: 'DOCUMENT_NOT_FOUND',
+          message: '未找到指定的文档'
+        }
+      })
+    }
+
+    // 读取原始文件
+    const filePath = path.join(uploadsDir, docMeta.filename)
+    if (!fs.existsSync(filePath)) {
+      return res.status(404).json({
+        success: false,
+        error: {
+          code: 'FILE_NOT_FOUND',
+          message: '文档文件不存在'
+        }
+      })
+    }
+
+    // 解析文档内容
+    const parsed = await documentService.parseDocument(filePath, 'text/plain')
+
+    // 构建知识条目
+    const item = {
+      id: docMeta.id,
+      category: docMeta.category,
+      subject: '自定义上传',
+      topic: docMeta.topic || '通用',
+      theorem: parsed.title,
+      difficulty: docMeta.difficulty || '初级',
+      description: parsed.content,
+      formula: '',
+      formulaLatex: '',
+      proofSteps: [],
+      examples: [],
+      commonMistakes: [],
+      socraticQuestions: [],
+      keywords: [parsed.type, '用户上传']
+    }
+
+    res.json({
+      success: true,
+      data: {
+        category: 'uploaded_documents',
+        items: [item]
+      }
+    })
+  } catch (error: any) {
+    res.status(500).json({
+      success: false,
+      error: {
+        code: 'GET_DOCUMENT_CONTENT_ERROR',
+        message: error.message || '获取文档内容时发生错误'
+      }
+    })
+  }
+})
+
+/**
  * DELETE /api/knowledge/documents/:id
  * 删除上传的文档
  */
@@ -327,6 +532,54 @@ router.delete('/documents/:id', async (req: Request, res: Response) => {
       }
     })
   }
+})
+
+/**
+ * Multer 错误处理中间件
+ * 处理文件上传时的错误
+ */
+router.use((error: any, req: Request, res: Response, next: any) => {
+  if (error instanceof multer.MulterError) {
+    // Multer 错误
+    if (error.code === 'LIMIT_FILE_SIZE') {
+      return res.status(400).json({
+        success: false,
+        error: {
+          code: 'FILE_TOO_LARGE',
+          message: '文件大小超过限制（最大 10MB）'
+        }
+      })
+    }
+    if (error.code === 'LIMIT_UNEXPECTED_FILE') {
+      return res.status(400).json({
+        success: false,
+        error: {
+          code: 'UNEXPECTED_FILE',
+          message: '意外的文件字段'
+        }
+      })
+    }
+    return res.status(400).json({
+      success: false,
+      error: {
+        code: 'UPLOAD_ERROR',
+        message: error.message || '文件上传错误'
+      }
+    })
+  }
+
+  // 其他错误
+  if (error) {
+    return res.status(400).json({
+      success: false,
+      error: {
+        code: 'UPLOAD_ERROR',
+        message: error.message || '文件上传失败'
+      }
+    })
+  }
+
+  next()
 })
 
 export default router
